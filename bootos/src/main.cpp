@@ -16,8 +16,8 @@ int main(int argc, char **argv)
 {
 	initialize();
 
-	//heartbeat hb(1, say_hello, NULL);
-	//hb.start();
+	heartbeat hb(5, say_hello, NULL);
+	hb.start();
 	commander cmd;
 	cmd.start();
 
