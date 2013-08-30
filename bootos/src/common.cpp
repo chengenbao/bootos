@@ -287,10 +287,31 @@ void *handle_socket(void *cli_sock)
 
 	command = trim_string(command);
 	loger.log(INFO, "received command: %s, len:%d.\n", command.c_str(), command.length());
+	bool is_blk_cmd = false;;
 	
-	const set<string> &block_command = bootos_manager::BLOCK_COMMAND;
-	if (block_command.find(command) != block_command.end())
+	if (bootos_manager::is_block_command(command) || 
+		bootos_manager::is_inner_command(command))
 	{
+		loger.log(INFO, "block command detected, close the socket first\n");
+		closesocket(sock);
+		is_blk_cmd = true;
 	}
-	closesocket(sock);
+
+	string result;
+	execute_command(command, result);
+	loger.log(INFO, "command %s execute result:\n%s\n", command.c_str(), result.c_str());
+
+	if (!is_blk_cmd)
+	{
+		send(sock, result.c_str(), result.length(), 0);
+		closesocket(sock);
+	}
+
+	return NULL;
+}
+
+// ×¢²ábootos
+void *registe_bootos(void *arg)
+{
+	return NULL;
 }

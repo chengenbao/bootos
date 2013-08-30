@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\bootos_manager.h" />
     <ClInclude Include="src\include\commander.h" />
     <ClInclude Include="src\include\config_reader.h" />
     <ClInclude Include="src\include\heartbeat.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="src\include\semaphore.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\bootos_manager.cpp" />
     <ClCompile Include="src\commander.cpp" />
     <ClCompile Include="src\config_reader.cpp" />
     <ClCompile Include="src\heartbeat.cpp" />
