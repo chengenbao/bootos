@@ -7,10 +7,10 @@
 using namespace std;
 
 static const char *prefix_str[] = {"Finest: ", "Finer: ", "Fine: ", 
-	"Config: ", "Info: ", "Waring: ", "Severe: "};
+	"Config: ", "Info: ", "Warning: ", "Severe: "};
 static const int file_name_len = 256; 
 
-logger::logger(const char *file_name_prefix, level l) :  log_fp(NULL), log_level(l) 
+logger::logger(const char *file_name_prefix, const level l) :  log_fp(NULL), log_level(l) 
 {
 	char file_name[file_name_len];
 	time_t now;
@@ -30,6 +30,10 @@ logger::logger(const char *file_name_prefix, level l) :  log_fp(NULL), log_level
         log_fp = stderr;
         log(SEVERE, "can not open log file %s, use stderr\n", file_name);
     }
+}
+
+logger::logger(FILE *fp, const level l) : log_fp(fp), log_level(l)
+{
 }
 
 void logger::log(level l, const char *fmt, ...)

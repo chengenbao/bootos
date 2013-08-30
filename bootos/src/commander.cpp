@@ -55,13 +55,18 @@ void commander::run()
 		abort();
 	}
 
+	loger.log(INFO, "Server started\n");
 	while(true)
 	{
 		struct sockaddr_in cli_addr;
 		int size = sizeof(sockaddr);
 		SOCKET cli_sock = accept(sock, (struct sockaddr *) &cli_addr, &size);
-		pthread_t handle_thread;
-		pthread_create(&handle_thread, NULL, handle_socket, &cli_sock);
+		loger.log(INFO, "receive a connection.\n");
+		if (cli_sock != INVALID_SOCKET)
+		{
+			pthread_t handle_thread;
+			pthread_create(&handle_thread, NULL, handle_socket, &cli_sock);
+		}
 	}
 
 	closesocket(sock);

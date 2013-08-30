@@ -6,7 +6,8 @@ enum level {FINEST, FINER, FINE, CONFIG, INFO, WARING, SEVERE};
 class logger
 {
 	public:
-		logger(const char *file_name_prefix, level l = FINEST);
+		logger(const char *file_name_prefix, const level l = FINEST);
+		logger(FILE *fp, const level l = FINEST);
 		void log(level l, const char *fmt, ...);
 		void log_f(FILE *fp, level l, const char *fmt, ...);
 		void set_log_level(level l);

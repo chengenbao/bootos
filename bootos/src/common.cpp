@@ -3,13 +3,14 @@
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
+#include <bootos_manager.h>
 
 using namespace std;
 
 char escape_arr[128];
 const char *prog_name = "bootos";
 const char *log_file_name_prefix = "log/bootos_";
-logger loger(log_file_name_prefix);
+logger loger(stderr);
 config_reader cfr;
 static void init_escape_char();
 static void process_cmdline_file();
@@ -25,17 +26,16 @@ void process_cmdline_file()
 {
 	// read /proc/cmdline for initrd parameters
 	const string filename("config.ini");
-	const int buf_size = 256;
 	ifstream cmdfile(filename);
-	char buf[buf_size];
+	char buf[BUF_SIZE];
 	string content;
 
-	memset(buf, 0x0, buf_size);
+	memset(buf, 0x0, BUF_SIZE);
 	if (cmdfile)
 	{
 		while(cmdfile.good())
 		{
-			cmdfile.read(buf, buf_size);
+			cmdfile.read(buf, BUF_SIZE);
 			content += string(buf, cmdfile.gcount());
 		}
 	}
@@ -209,7 +209,7 @@ string trim_string( const string &str)
 		}
 	}
 
-	for (int i = size - 1; i >= 0; ++i)
+	for (int i = size - 1; i >= 0; --i)
 	{
 		if ( str[i] != '\t' && str[i] != ' ' && str[i] != '\n' && str[i] != '\r')
 		{
@@ -233,8 +233,7 @@ string trim_string( const string &str)
 bool execute_command(const string command, string &result)
 {
 	FILE *fp;
-	const int buf_size = 256;
-	char buf[buf_size];
+	char buf[BUF_SIZE];
 
 	result = "";
 	if ((fp = popen(command.c_str(), "r")) == NULL)
@@ -242,7 +241,7 @@ bool execute_command(const string command, string &result)
 		return false;
 	}
 
-	while(fgets(buf, buf_size, fp))
+	while(fgets(buf, BUF_SIZE, fp))
 	{
 		result += string(buf);
 	}
@@ -250,4 +249,48 @@ bool execute_command(const string command, string &result)
 	pclose(fp);
 
 	return true;
+}
+
+void *handle_socket(void *cli_sock)
+{
+	SOCKET sock = *((SOCKET*)cli_sock);
+
+	if (sock == INVALID_SOCKET)
+	{
+		logger("failed to accept client!\n");
+		return NULL;
+	}
+
+	char buf[BUF_SIZE];
+	string command;
+
+	while(true)
+	{
+		memset(buf, 0x00, BUF_SIZE);
+		int ret = recv(sock, buf, BUF_SIZE, 0);
+
+		if (ret == 0 || ret == SOCKET_ERROR) // ¿Í»§¶ËÍË³ö
+		{
+			loger.log(level::WARING, "client has exit!\n");
+			break;
+		}
+		
+		string data = string(buf, ret);
+
+		command += data;
+		if(command.find(END_FLAG) != string::npos)
+		{
+			loger.log(INFO, "receiving data end!\n");
+			break;
+		}
+	}
+
+	command = trim_string(command);
+	loger.log(INFO, "received command: %s, len:%d.\n", command.c_str(), command.length());
+	
+	const set<string> &block_command = bootos_manager::BLOCK_COMMAND;
+	if (block_command.find(command) != block_command.end())
+	{
+	}
+	closesocket(sock);
 }

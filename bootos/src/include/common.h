@@ -31,14 +31,18 @@ typedef void * (*task_func)(void *);
 
 using namespace std;
 
+// 宏定义
+#define END_FLAG  "\n\n\n"
+
 // 全局变量定义
 extern logger loger;
 extern config_reader cfr;
 
 // 常量定义
 const int MSEC_PER_SEC = 1000;
-const int PORT = 8087;
+const int PORT = 8086;
 const int BACK_LOG = 256;
+const int BUF_SIZE = 256;
 
 // 公用函数定义
 void initialize();
@@ -48,6 +52,7 @@ bool  split_string(const string &str, const set<string> &patterns, vector<string
 string trim_string( const string &str);
 bool execute_command(const string command, string &result);
 void *handle_socket(void *sock);
+void *registe_bootos(void *arg);
 
 // 多线程包装器
 template <typename TYPE, void (TYPE::*run)()>
@@ -57,5 +62,7 @@ void* _thread_wrapper(void* param)
 	This->run();     
 	return NULL;  
 }  
+
+
 
 #endif
