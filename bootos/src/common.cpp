@@ -229,3 +229,25 @@ string trim_string( const string &str)
 
 	return result;
 }
+
+bool execute_command(const string command, string &result)
+{
+	FILE *fp;
+	const int buf_size = 256;
+	char buf[buf_size];
+
+	result = "";
+	if ((fp = popen(command.c_str(), "r")) == NULL)
+	{
+		return false;
+	}
+
+	while(fgets(buf, buf_size, fp))
+	{
+		result += string(buf);
+	}
+
+	pclose(fp);
+
+	return true;
+}

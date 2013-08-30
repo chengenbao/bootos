@@ -1,6 +1,7 @@
 #include <config_reader.h>
 #include <common.h>
 #include <algorithm>
+#include <cstdio>
 
 using namespace std;
 
@@ -29,8 +30,7 @@ bool config_reader::initialize()
 	return true;
 }
 
-void
-config_reader::add_element(xmlNode *node, vector<string> &path)
+void config_reader::add_element(xmlNode *node, vector<string> &path)
 {
 	xmlNode *cur_node = NULL;
 
@@ -60,8 +60,7 @@ config_reader::add_element(xmlNode *node, vector<string> &path)
 	}
 }
 
-string
-config_reader::to_path( const vector<string> &path )
+string config_reader::to_path( const vector<string> &path )
 {
 	string result;
 
@@ -98,4 +97,3 @@ string config_reader::to_string()
 
 	return tmp;
 }
-

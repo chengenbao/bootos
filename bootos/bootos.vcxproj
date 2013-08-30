@@ -79,6 +79,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\commander.h" />
     <ClInclude Include="src\include\config_reader.h" />
     <ClInclude Include="src\include\heartbeat.h" />
     <ClInclude Include="src\include\iconv.h" />
@@ -89,6 +90,7 @@
     <ClInclude Include="src\include\semaphore.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\commander.cpp" />
     <ClCompile Include="src\config_reader.cpp" />
     <ClCompile Include="src\heartbeat.cpp" />
     <ClCompile Include="src\logger.cpp" />

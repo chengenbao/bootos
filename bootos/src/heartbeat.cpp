@@ -10,7 +10,7 @@ void heartbeat::start()
 	}
 	pthread_t handler;
 	pthread_create(&handler, NULL, heartbeat::run_helper, this);
-	pthread_join(handler, NULL);
+	//pthread_join(handler, NULL);
 	is_started = true;
 }
 

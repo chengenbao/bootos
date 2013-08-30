@@ -15,9 +15,11 @@ int main(int argc, char **argv)
 {
 	initialize();
 
-	cout << cfr.to_string() << endl;
 	heartbeat hb(1, say_hello, NULL);
 	hb.start();
 
+	while(true)
+		sleep(1000);
+	
 	return 0;
 }
