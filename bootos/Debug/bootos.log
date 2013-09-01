@@ -1,38 +1,30 @@
-﻿生成启动时间为 8/30/2013 3:26:48 PM。
-     1>项目“D:\Coding\Vsproject\bootos\bootos\bootos.vcxproj”在节点 2 上(build 个目标)。
-     1>InitializeBuildStatus:
-         正在创建“Debug\bootos.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
-       ClCompile:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt src\common.cpp src\main.cpp
+﻿Build started 2013/9/1 15:55:44.
+     1>Project "D:\Coding\GitHub\bootos\bootos\bootos.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt src\bootos_manager.cpp src\commander.cpp src\common.cpp src\config_reader.cpp src\heartbeat.cpp src\main.cpp
+         bootos_manager.cpp
+         Generating Code...
+         Compiling...
          main.cpp
+         heartbeat.cpp
+         config_reader.cpp
          common.cpp
-     1>src\common.cpp(39): warning C4244: “参数”: 从“std::streamsize”转换到“unsigned int”，可能丢失数据
-     1>src\common.cpp(150): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 C:\Program Files\Microsoft Visual Studio 10.0\VC\include\stdio.h(371) : 参见“sprintf”的声明
-     1>src\common.cpp(274): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“level”
-         正在生成代码...
-       ManifestResourceCompile:
-         所有输出均为最新。
+     1>src\common.cpp(46): warning C4244: 'argument' : conversion from 'std::streamsize' to 'unsigned int', possible loss of data
+     1>src\common.cpp(157): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdio.h(357) : see declaration of 'sprintf'
+         commander.cpp
+         Generating Code...
        Link:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Coding\Vsproject\bootos\Debug\bootos.exe" /INCREMENTAL /NOLOGO curllib.lib pthreadVC2.lib libxml2.lib iconv.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\bootos.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Coding\Vsproject\bootos\Debug\bootos.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Coding\Vsproject\bootos\Debug\bootos.lib" /MACHINE:X86 Debug\bootos.exe.embed.manifest.res
-         Debug\bootos_manager.obj
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Coding\GitHub\bootos\Debug\bootos.exe" /INCREMENTAL /NOLOGO curllib.lib pthreadVC2.lib libxml2.lib iconv.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Coding\GitHub\bootos\Debug\bootos.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Coding\GitHub\bootos\Debug\bootos.lib" /MACHINE:X86 Debug\bootos_manager.obj
          Debug\commander.obj
          Debug\config_reader.obj
          Debug\heartbeat.obj
          Debug\logger.obj
          Debug\main.obj
          Debug\common.obj
-       Manifest:
-         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\bootos.exe.embed.manifest" /manifest Debug\bootos.exe.intermediate.manifest
-         所有输出均为最新。
-       LinkEmbedManifest:
-         所有输出均为最新。
-         bootos.vcxproj -> D:\Coding\Vsproject\bootos\Debug\bootos.exe
-       FinalizeBuildStatus:
-         正在删除文件“Debug\bootos.unsuccessfulbuild”。
-         正在对“Debug\bootos.lastbuildstate”执行 Touch 任务。
-     1>已完成生成项目“D:\Coding\Vsproject\bootos\bootos\bootos.vcxproj”(build 个目标)的操作。
+         bootos.vcxproj -> D:\Coding\GitHub\bootos\Debug\bootos.exe
+     1>Done Building Project "D:\Coding\GitHub\bootos\bootos\bootos.vcxproj" (Build target(s)).
 
-生成成功。
+Build succeeded.
 
-已用时间 00:00:02.54
+Time Elapsed 00:00:15.49

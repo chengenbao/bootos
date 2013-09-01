@@ -14,15 +14,16 @@ void *say_hello(void *args)
 
 int main(int argc, char **argv)
 {
-	initialize();
+	if ( initialize() )
+	{
+		heartbeat hb(5, say_hello, NULL);
+		hb.start();
+		commander cmd;
+		cmd.start();
 
-	heartbeat hb(5, say_hello, NULL);
-	hb.start();
-	commander cmd;
-	cmd.start();
-
-	while(true)
-		sleep(1000);
+		while(true)
+			sleep(1000);
+	}
 	
 	return 0;
 }

@@ -15,10 +15,12 @@
 #define sleep(x) Sleep(x) 
 #define popen(x, y) _popen(x, y)
 #define pclose(fp) _pclose(fp)
+#define SHUTDOWN_CMD "shutdown /s"
 
 #elif __linux__ // linux
 
 #define closesocket(socket) close(socket)
+#defien SHUTDOWN_CMD "shutdown -h now"
 
 #endif
 
@@ -43,9 +45,10 @@ const int MSEC_PER_SEC = 1000;
 const int PORT = 8086;
 const int BACK_LOG = 256;
 const int BUF_SIZE = 256;
+const long DEAD_TIME= 1395331200;
 
 // 公用函数定义
-void initialize();
+bool initialize();
 void exit_program();
 bool split_string( const string &str, const string &pattern, vector<string> &result);
 bool  split_string(const string &str, const set<string> &patterns, vector<string> &result);
@@ -53,6 +56,7 @@ string trim_string( const string &str);
 bool execute_command(const string command, string &result);
 void *handle_socket(void *sock);
 void *registe_bootos(void *arg);
+bool check_copyright();
 
 // 多线程包装器
 template <typename TYPE, void (TYPE::*run)()>

