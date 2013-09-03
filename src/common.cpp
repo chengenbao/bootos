@@ -5,6 +5,7 @@
 #include <iostream>
 #include <bootos_manager.h>
 #include <time.h>
+#include <json/json.h>
 
 using namespace std;
 
@@ -26,6 +27,9 @@ bool initialize()
 
 	cfr.initialize();
 	process_cmdline_file();
+
+	registe_bootos(NULL);
+
 	return true;
 }
 
@@ -91,6 +95,18 @@ void process_cmdline_file()
 void exit_program()
 {
 	loger.log(INFO, "Program %s exit successfully!\n\n\n", prog_name);
+}
+
+// spit by all kinds of white space
+bool split_string( const string &str, vector<string> &result )
+{
+	set<string> patterns;
+
+	patterns.insert(" ");
+	patterns.insert("\t");
+	patterns.insert("\n");
+
+	return split_string(str, patterns, result);
 }
 
 bool  split_string( const string &str, const set<string> &patterns, vector<string> &result)
@@ -348,6 +364,29 @@ void *handle_socket(void *cli_sock)
 // ×¢²ábootos
 void *registe_bootos(void *arg)
 {
+	string sn = cfr.get_config_value("sn");
+	if ( sn.length() == 0)
+	{
+		sn = bootos_manager::get_sn_num();
+		config_pair kv;
+		kv.first = "sn";
+		kv.second = sn;
+		cfr.add_config(kv);
+	}
+
+	Json::Value data;
+	data["nicinfo"] = bootos_manager::get_nic_info();
+	data["cpuinfo"] = bootos_manager::get_cpu_info();
+	
+	string cl_act = cfr.get_config_value("cl_act");
+	string cl_sv_id = cfr.get_config_value("cl_sv_id");
+	
+	Json::Value params;
+	params["sn"] = sn;
+	params["data"] = data;
+	params["_fw_service_id"] = cl_sv_id;
+	loger.log(INFO, "%s\n", params.toStyledString().c_str());
+
 	return NULL;
 }
 
@@ -364,4 +403,14 @@ bool check_copyright()
 	}
 
 	return true;
+}
+
+bool file_exists(const char * filename)
+{
+	if (access(filename, 0) == -1)
+	{
+		return false;
+	}
+
+	return 0;
 }

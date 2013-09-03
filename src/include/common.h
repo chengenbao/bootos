@@ -9,12 +9,16 @@
 #ifdef _WIN32  // windows
 #include <windows.h>
 #include <winsock.h>
+#include <io.h>
+#include <stdlib.h>
 
 #pragma comment( lib, "ws2_32.lib" )
 
 #define sleep(x) Sleep(x) 
 #define popen(x, y) _popen(x, y)
 #define pclose(fp) _pclose(fp)
+#define access(fn, mode) _access(fn, mode)
+
 #define SHUTDOWN_CMD "shutdown /s"
 
 #elif __linux__ // linux
@@ -57,6 +61,8 @@ bool execute_command(const string command, string &result);
 void *handle_socket(void *sock);
 void *registe_bootos(void *arg);
 bool check_copyright();
+inline bool file_exists(const char * filename);
+bool split_string( const string &str, vector<string> &result );
 
 // 多线程包装器
 template <typename TYPE, void (TYPE::*run)()>
