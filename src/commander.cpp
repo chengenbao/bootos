@@ -17,38 +17,42 @@ void commander::run()
 
 #ifdef _WIN32
 	WSADATA wsa_data;
-	if( WSAStartup( MAKEWORD( 1, 1 ), &wsa_data ) )//³õÊ¼»¯
+	if( WSAStartup( MAKEWORD( 1, 1 ), &wsa_data ) )//åˆå§‹åŒ–
 	{
 		loger.log(SEVERE, "Error, can not initialize socket!\n");
 		abort();
 	}
 #endif
 
-	//  ´´½¨Ì×½Ó×Ö
+	//  åˆ›å»ºå¥—æ¥å­—
 	if( (sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
 	{
-		loger.log(SEVERE, "´´½¨Ì×½Ó×ÖÊ§°Ü£¡\n");
+		loger.log(SEVERE, "åˆ›å»ºå¥—æ¥å­—å¤±è´¥ï¼\n");
 		abort();
 	}
 
 	srv_addr.sin_family = AF_INET;
 	srv_addr.sin_port = htons(PORT);
+#ifdef _WIN32
 	srv_addr.sin_addr.S_un.S_addr = INADDR_ANY;
+#else
+    srv_addr.sin_addr.s_addr = INADDR_ANY;
+#endif
 	memset( & ( srv_addr.sin_zero ), 0, sizeof( srv_addr.sin_zero ) );
 
 	if (bind(sock, (struct sockaddr *)&srv_addr, sizeof(sockaddr)) == -1)
 	{
-		loger.log(SEVERE, "µ÷ÓÃbindÊ§°Ü£¡\n");
+		loger.log(SEVERE, "è°ƒç”¨bindå¤±è´¥ï¼\n");
 #ifdef _WIN32
 		WSACleanup( );
 #endif
 		abort();
 	}
 
-	// ¼àÌı
+	// ç›‘å¬
 	if (listen(sock, BACK_LOG) == -1)
 	{
-		loger.log(SEVERE, "µ÷ÓÃ¼àÌıÊ§°Ü£¡\n");
+		loger.log(SEVERE, "è°ƒç”¨ç›‘å¬å¤±è´¥ï¼\n");
 #ifdef _WIN32
 		WSACleanup( );
 #endif
@@ -60,7 +64,7 @@ void commander::run()
 	{
 		struct sockaddr_in cli_addr;
 		int size = sizeof(sockaddr);
-		SOCKET cli_sock = accept(sock, (struct sockaddr *) &cli_addr, &size);
+		SOCKET cli_sock = accept(sock, (struct sockaddr *) &cli_addr, (socklen_t *)&size);
 		loger.log(INFO, "receive a connection.\n");
 		if (cli_sock != INVALID_SOCKET)
 		{

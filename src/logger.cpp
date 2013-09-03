@@ -7,7 +7,7 @@
 using namespace std;
 
 static const char *prefix_str[] = {"Finest: ", "Finer: ", "Fine: ", 
-	"Config: ", "Info: ", "Warning: ", "Severe: "};
+	"Config: ", "Info: ", "Warn: ", "Severe: "};
 static const int file_name_len = 256; 
 
 logger::logger(const char *file_name_prefix, const level l) :  log_fp(NULL), log_level(l) 

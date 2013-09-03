@@ -24,9 +24,9 @@ map<string, string> bootos_manager::init_registe_status()
 {
 	map<string, string> registe_status;
 
-	registe_status.insert(pair<string, int>("UNREGISTE", "0"));
-	registe_status.insert(pair<string, int>("SUCCESS", "1"));
-	registe_status.insert(pair<string, int>("FAILED", "2"));
+	registe_status.insert(pair<string, string>("UNREGISTE", "0"));
+	registe_status.insert(pair<string, string>("SUCCESS", "1"));
+	registe_status.insert(pair<string, string>("FAILED", "2"));
 
 	return registe_status;
 }
@@ -35,10 +35,10 @@ map<string, string> bootos_manager::init_imm_config_status()
 {
 	map<string, string> imm_config_status;
 
-	imm_config_status.insert(pair<string, int>("UNCONFIG", "0"));
-	imm_config_status.insert(pair<string, int>("CONFIGING", "1"));
-	imm_config_status.insert(pair<string, int>("SUCCESS", "2"));
-	imm_config_status.insert(pair<string, int>("FAILED", "3"));
+	imm_config_status.insert(pair<string, string>("UNCONFIG", "0"));
+	imm_config_status.insert(pair<string, string>("CONFIGING", "1"));
+	imm_config_status.insert(pair<string, string>("SUCCESS", "2"));
+	imm_config_status.insert(pair<string, string>("FAILED", "3"));
 
 	return imm_config_status;
 }
@@ -114,8 +114,9 @@ Json::Value bootos_manager::get_nic_info()
 			else if(line->find("inet addr") != string::npos)
 			{
 				vector<string> tmp;
-				split_string(*line,":", tmp);
+				split_string(*line, ":", tmp);
 				ip = tmp[1];
+                tmp.clear();
 				split_string(ip, tmp);
 				ip = tmp[0];
 			}

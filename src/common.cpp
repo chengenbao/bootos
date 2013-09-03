@@ -37,7 +37,7 @@ void process_cmdline_file()
 {
 	// read /proc/cmdline for initrd parameters
 	const string filename("config.ini");
-	ifstream cmdfile(filename);
+	ifstream cmdfile(filename.c_str());
 	char buf[BUF_SIZE];
 	string content;
 
@@ -292,9 +292,9 @@ void *handle_socket(void *cli_sock)
 		memset(buf, 0x00, BUF_SIZE);
 		int ret = recv(sock, buf, BUF_SIZE, 0);
 
-		if (ret == 0 || ret == SOCKET_ERROR) // ¿Í»§¶ËÍË³ö
+		if (ret == 0 || ret == SOCKET_ERROR) // å®¢æˆ·ç«¯é€€å‡º
 		{
-			loger.log(level::WARING, "client has exit!\n");
+			loger.log(WARN, "client has exit!\n");
 			break;
 		}
 		
@@ -361,7 +361,7 @@ void *handle_socket(void *cli_sock)
 	return NULL;
 }
 
-// ×¢²ábootos
+// æ³¨å†Œbootos
 void *registe_bootos(void *arg)
 {
 	string sn = cfr.get_config_value("sn");

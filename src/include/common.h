@@ -1,6 +1,6 @@
 // common utilities
 // Author: chengenbao
-// Email£ºgenbao.chen@gmail.com
+// Emailï¼šgenbao.chen@gmail.com
 
 
 #ifndef UTILITY_H
@@ -22,9 +22,17 @@
 #define SHUTDOWN_CMD "shutdown /s"
 
 #elif __linux__ // linux
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <string.h>
 
 #define closesocket(socket) close(socket)
-#defien SHUTDOWN_CMD "shutdown -h now"
+#define SHUTDOWN_CMD "shutdown -h now"
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+
+typedef int SOCKET;
 
 #endif
 
@@ -37,21 +45,21 @@ typedef void * (*task_func)(void *);
 
 using namespace std;
 
-// ºê¶¨Òå
+// å®å®šä¹‰
 #define END_FLAG  "\n\n\n"
 
-// È«¾Ö±äÁ¿¶¨Òå
+// å…¨å±€å˜é‡å®šä¹‰
 extern logger loger;
 extern config_reader cfr;
 
-// ³£Á¿¶¨Òå
+// å¸¸é‡å®šä¹‰
 const int MSEC_PER_SEC = 1000;
 const int PORT = 8086;
 const int BACK_LOG = 256;
 const int BUF_SIZE = 256;
 const long DEAD_TIME= 1395331200;
 
-// ¹«ÓÃº¯Êı¶¨Òå
+// å…¬ç”¨å‡½æ•°å®šä¹‰
 bool initialize();
 void exit_program();
 bool split_string( const string &str, const string &pattern, vector<string> &result);
@@ -61,10 +69,10 @@ bool execute_command(const string command, string &result);
 void *handle_socket(void *sock);
 void *registe_bootos(void *arg);
 bool check_copyright();
-inline bool file_exists(const char * filename);
+bool file_exists(const char * filename);
 bool split_string( const string &str, vector<string> &result );
 
-// ¶àÏß³Ì°ü×°Æ÷
+// å¤šçº¿ç¨‹åŒ…è£…å™¨
 template <typename TYPE, void (TYPE::*run)()>
 void* _thread_wrapper(void* param)
 {
