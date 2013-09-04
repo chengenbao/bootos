@@ -385,7 +385,7 @@ void *registe_bootos(void *arg)
 	params["sn"] = sn;
 	params["data"] = data;
 	params["_fw_service_id"] = cl_sv_id;
-	loger.log(INFO, "%s\n", params.toStyledString().c_str());
+	loger.log(INFO, "%s\n", params.asCString());
 
 	return NULL;
 }

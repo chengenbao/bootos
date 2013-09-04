@@ -21,6 +21,8 @@
 #define SHUTDOWN_CMD "shutdown /s"
 #define MSEC_PER_SEC 1000
 
+typedef int socklen_t;
+
 #elif __linux__ // linux
 #include <sys/socket.h>
 #include <sys/types.h>
