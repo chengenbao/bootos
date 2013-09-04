@@ -18,8 +18,8 @@
 #define popen(x, y) _popen(x, y)
 #define pclose(fp) _pclose(fp)
 #define access(fn, mode) _access(fn, mode)
-
 #define SHUTDOWN_CMD "shutdown /s"
+#define MSEC_PER_SEC 1000
 
 #elif __linux__ // linux
 #include <sys/socket.h>
@@ -31,6 +31,7 @@
 #define SHUTDOWN_CMD "shutdown -h now"
 #define INVALID_SOCKET -1
 #define SOCKET_ERROR -1
+#define MSEC_PER_SEC 1
 
 typedef int SOCKET;
 
@@ -53,7 +54,6 @@ extern logger loger;
 extern config_reader cfr;
 
 // 常量定义
-const int MSEC_PER_SEC = 1000;
 const int PORT = 8086;
 const int BACK_LOG = 256;
 const int BUF_SIZE = 256;
