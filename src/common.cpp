@@ -385,7 +385,9 @@ void *registe_bootos(void *arg)
 	params["sn"] = sn;
 	params["data"] = data;
 	params["_fw_service_id"] = cl_sv_id;
-	loger.log(INFO, "%s\n", params.asCString());
+
+	string tmp = replace_all(params.toStyledString(), "\n", "");
+	loger.log(INFO, "%s\n", tmp.c_str());
 
 	return NULL;
 }
@@ -413,4 +415,23 @@ bool file_exists(const char * filename)
 	}
 
 	return 0;
+}
+
+string replace_all(const string &src, const string symbol, const string target)
+{
+	string result(src);
+	int pos;
+	const int len = symbol.length();
+
+	if(len == 0) 
+	{
+		return result;
+	}
+
+	while( (pos = result.find(symbol)) >= 0)
+	{
+		result.replace(pos, pos + len, target);
+	}
+
+	return result;
 }
