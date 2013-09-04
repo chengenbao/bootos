@@ -386,7 +386,7 @@ void *registe_bootos(void *arg)
 	params["data"] = data;
 	params["_fw_service_id"] = cl_sv_id;
 
-	string tmp = replace_all(params.toStyledString(), "\n", "");
+	string tmp = format_json_string(params.toStyledString());
 	loger.log(INFO, "%s\n", tmp.c_str());
 
 	return NULL;
@@ -430,8 +430,37 @@ string replace_all(const string &src, const string symbol, const string target)
 
 	while( (pos = result.find(symbol)) >= 0)
 	{
-		result.replace(pos, pos + len, target);
+		result.replace(pos, len, target);
 	}
 
 	return result;
+}
+
+// remove the spare white space
+string format_json_string(const string &json_str)
+{
+    const char *pstr = json_str.c_str();
+    bool start_str = false;
+    string result;
+
+    while ( *pstr != '\0' )
+    {
+        if ( *pstr == '\"')
+        {
+            start_str = !start_str;
+        }
+
+        if ( *pstr == ' ' || *pstr == '\t' || *pstr == '\n')
+        {
+            if (start_str)
+            {
+                result += *pstr;
+            }
+        } else {
+            result += *pstr;
+        }
+        ++pstr;
+    } 
+
+    return result;
 }

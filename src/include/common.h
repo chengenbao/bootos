@@ -74,6 +74,7 @@ bool check_copyright();
 bool file_exists(const char * filename);
 bool split_string( const string &str, vector<string> &result );
 string replace_all(const string &src, const string symbol, const string target);
+string format_json_string(const string &json_str);
 
 // 多线程包装器
 template <typename TYPE, void (TYPE::*run)()>
