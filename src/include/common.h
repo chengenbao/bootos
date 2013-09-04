@@ -18,7 +18,6 @@
 #define popen(x, y) _popen(x, y)
 #define pclose(fp) _pclose(fp)
 #define access(fn, mode) _access(fn, mode)
-
 #define SHUTDOWN_CMD "shutdown /s"
 
 #elif __linux__ // linux
