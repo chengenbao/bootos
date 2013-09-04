@@ -28,9 +28,8 @@ public:
 		interval = inter;
 	}
 	void start();
+    void run();
 private:
-	static void *run_helper(void *ag);
-	void run();
 	int interval;
 	task_func task;
 	void *args;
