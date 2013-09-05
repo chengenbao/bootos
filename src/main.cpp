@@ -6,18 +6,16 @@
 
 using namespace std;
 
-void *say_hello(void *args)
-{
-	loger.log(INFO, "Hello\n");
-	return NULL;
-}
 
 int main(int argc, char **argv)
 {
 	if ( initialize() )
 	{
-		heartbeat hb(5, say_hello, NULL);
+        registe_bootos(NULL);
+
+		heartbeat hb(5, send_heart_beat, NULL);
 		hb.start();
+
 		commander cmd;
 		cmd.start();
 

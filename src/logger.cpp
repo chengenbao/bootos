@@ -6,8 +6,8 @@
 
 using namespace std;
 
-static const char *prefix_str[] = {"Finest: ", "Finer: ", "Fine: ", 
-	"Config: ", "Info: ", "Warn: ", "Severe: "};
+static const char *prefix_str[] = {"FINEST: ", "FINNER: ", "FINE: ", 
+	"CONFIG: ", "INFO: ", "WARN: ", "SEVERE: ", "ERROR: "};
 static const int file_name_len = 256; 
 
 logger::logger(const char *file_name_prefix, const level l) :  log_fp(NULL), log_level(l) 
@@ -28,7 +28,7 @@ logger::logger(const char *file_name_prefix, const level l) :  log_fp(NULL), log
 	if (log_fp == NULL)
     {
         log_fp = stderr;
-        log(SEVERE, "can not open log file %s, use stderr\n", file_name);
+        log(ERROR, "can not open log file %s, use stderr\n", file_name);
     }
 }
 

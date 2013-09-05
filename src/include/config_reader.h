@@ -23,6 +23,7 @@ class config_reader
 			return data[key];
 		}
 		void add_config(const config_pair &kv);
+		void add_config(const string &key, const string &value);
 		string to_string();
 	private:
 		string init_filename;

@@ -6,6 +6,7 @@
 #include <bootos_manager.h>
 #include <time.h>
 #include <json/json.h>
+#include <curl/curl.h>
 
 using namespace std;
 
@@ -16,19 +17,20 @@ logger loger(stderr);
 config_reader cfr;
 static void init_escape_char();
 static void process_cmdline_file();
+static int callback_write( void *ptr, size_t size, size_t nmemb, void *userp);
 
 // initialization for program starting
 bool initialize()
 {
-	if ( !check_copyright() ) 
+	if ( !check_copyright() )
 	{
 		return false;
 	}
 
+    init_escape_char();
 	cfr.initialize();
 	process_cmdline_file();
 
-	registe_bootos(NULL);
 
 	return true;
 }
@@ -52,7 +54,7 @@ void process_cmdline_file()
 	}
 	else
 	{
-		loger.log(SEVERE, "file %s not found!\n", filename.c_str());
+		loger.log(ERROR, "file %s not found!\n", filename.c_str());
 	}
 
 	vector<string> lines;
@@ -118,7 +120,7 @@ bool  split_string( const string &str, const set<string> &patterns, vector<strin
 		if (*it == " ")
 			continue;
 
-		int pos; 
+		int pos;
 		int pat_len = it->length();
 
 		while((pos = tmp.find(*it)) >= 0)
@@ -198,7 +200,7 @@ void  init_escape_char()
 	escape_arr['^'] = 1;
 	escape_arr['~'] = 1;
 	escape_arr[' '] = 1;
-	
+
 	escape_arr['['] = 1;
 	escape_arr[']'] = 1;
 	escape_arr['`'] = 1;
@@ -297,7 +299,7 @@ void *handle_socket(void *cli_sock)
 			loger.log(WARN, "client has exit!\n");
 			break;
 		}
-		
+
 		// delete '\r'
 		for (int i = 0; i < ret;)
 		{
@@ -328,8 +330,8 @@ void *handle_socket(void *cli_sock)
 	command = trim_string(command);
 	loger.log(INFO, "received command: %s, len:%d.\n", command.c_str(), command.length());
 	bool is_blk_cmd = false;;
-	
-	if (bootos_manager::is_block_command(command) || 
+
+	if (bootos_manager::is_block_command(command) ||
 		bootos_manager::is_inner_command(command))
 	{
 		loger.log(INFO, "block command detected, close the socket first\n");
@@ -377,17 +379,18 @@ void *registe_bootos(void *arg)
 	Json::Value data;
 	data["nicinfo"] = bootos_manager::get_nic_info();
 	data["cpuinfo"] = bootos_manager::get_cpu_info();
-	
+
 	string cl_act = cfr.get_config_value("cl_act");
 	string cl_sv_id = cfr.get_config_value("cl_sv_id");
-	
-	Json::Value params;
-	params["sn"] = sn;
-	params["data"] = data;
-	params["_fw_service_id"] = cl_sv_id;
 
-	string tmp = format_json_string(params.toStyledString());
-	loger.log(INFO, "%s\n", tmp.c_str());
+    string query;
+    query += "sn=" + url_encode(sn) + "&";
+    query += "_fw_service_id=" + url_encode(cl_sv_id) + "&";
+    query += "data=" + url_encode(format_json_string(data.toStyledString())); 
+
+    cl_act += "?" + query;
+
+    send_to_server(cl_act, query);
 
 	return NULL;
 }
@@ -398,7 +401,7 @@ bool check_copyright()
 
 	if (now >= DEAD_TIME)
 	{
-		loger.log(SEVERE, "It is the deadline of the world!\n");
+		loger.log(ERROR, "It is the deadline of the world!\n");
 		string tmp;
 		execute_command(SHUTDOWN_CMD, tmp);
 		return false;
@@ -423,7 +426,7 @@ string replace_all(const string &src, const string symbol, const string target)
 	int pos;
 	const int len = symbol.length();
 
-	if(len == 0) 
+	if(len == 0)
 	{
 		return result;
 	}
@@ -460,7 +463,86 @@ string format_json_string(const string &json_str)
             result += *pstr;
         }
         ++pstr;
-    } 
+    }
 
     return result;
+}
+
+void send_to_server(const string &uri, const string &query)
+{
+    string srv_addr = cfr.get_config_value("srv_addr");
+    string srv_port = cfr.get_config_value("srv_port");
+
+    if (srv_addr.length() == 0 || srv_port.length() == 0)
+    {
+        return;
+    }
+
+    string url = "http://" ;
+    url += srv_addr + ":" + srv_port + uri;
+
+    loger.log(INFO, "Send data: %s  to server %s\n", query.c_str(), url.c_str());
+
+    CURL *curl;
+    string result;
+    CURLcode res;
+
+    curl = curl_easy_init();
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, query.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback_write);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
+    curl_easy_setopt(curl, CURLOPT_POST, 1);
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0);
+    curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+    curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "/tmp/bootos.cookie");
+    res = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+
+    string registe_status;
+    if ( CURLE_OK != res )
+    {
+        loger.log(ERROR, "Send to server error! Url:%s\n", url.c_str());
+        registe_status = bootos_manager::REGISTE_STATUS["FAILED"];
+    }
+    else
+    {
+        registe_status = bootos_manager::REGISTE_STATUS["SUCCESS"];
+    }
+
+    cfr.add_config("registe_status", registe_status);
+}
+
+int callback_write( void *ptr, size_t size, size_t nmemb, void *userp)
+{
+    string *str = (string *) userp;
+    str->append( static_cast<const char *>(ptr), size * nmemb );
+
+    return size * nmemb;
+}
+
+void *send_heart_beat(void *arg)
+{
+    string hb_act = cfr.get_config_value("hb_act");
+    string hb_sv_id = cfr.get_config_value("hb_sv_id");
+    string sn = cfr.get_config_value("sn");
+    string imm_status = bootos_manager::get_imm_status();
+    string registe_status = cfr.get_config_value("registe_status");
+
+    if (registe_status.length() == 0)
+    {
+        registe_status = bootos_manager::REGISTE_STATUS["UNREGISTE"];
+        cfr.add_config("registe_status", registe_status);
+    }
+
+    string query;
+    query += "sn=" + url_encode(sn) + "&";
+    query += "_fw_service_id=" + url_encode(hb_sv_id) + "&";
+    query += "registe_status=" + url_encode(registe_status) + "&";
+    query += "imm_status=" + url_encode(imm_status);
+
+    string uri = hb_act + "?" + query;
+
+    send_to_server(uri, query);
 }

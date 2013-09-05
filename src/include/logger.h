@@ -2,7 +2,7 @@
 #define __LOGGER__
 #include <cstdio>
 
-enum level {FINEST, FINER, FINE, CONFIG, INFO, WARN, SEVERE};
+enum level {FINEST, FINNER, FINE, CONFIG, INFO, WARN, SEVERE, ERROR};
 class logger
 {
 	public:

@@ -19,7 +19,7 @@ void commander::run()
 	WSADATA wsa_data;
 	if( WSAStartup( MAKEWORD( 1, 1 ), &wsa_data ) )//初始化
 	{
-		loger.log(SEVERE, "Error, can not initialize socket!\n");
+		loger.log(ERROR, "Can not initialize socket!\n");
 		abort();
 	}
 #endif
@@ -27,7 +27,7 @@ void commander::run()
 	//  创建套接字
 	if( (sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
 	{
-		loger.log(SEVERE, "创建套接字失败！\n");
+		loger.log(ERROR, "创建套接字失败！\n");
 		abort();
 	}
 
@@ -42,7 +42,7 @@ void commander::run()
 
 	if (bind(sock, (struct sockaddr *)&srv_addr, sizeof(sockaddr)) == -1)
 	{
-		loger.log(SEVERE, "调用bind失败！\n");
+		loger.log(ERROR, "调用bind失败！\n");
 #ifdef _WIN32
 		WSACleanup( );
 #endif
@@ -52,7 +52,7 @@ void commander::run()
 	// 监听
 	if (listen(sock, BACK_LOG) == -1)
 	{
-		loger.log(SEVERE, "调用监听失败！\n");
+		loger.log(ERROR, "调用监听失败！\n");
 #ifdef _WIN32
 		WSACleanup( );
 #endif

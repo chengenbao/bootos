@@ -18,7 +18,7 @@ bool config_reader::initialize()
 
 	if ( doc == NULL )
 	{
-		loger.log(SEVERE, "can not parse configuation file: %s, program exits!\n", init_filename.c_str());
+		loger.log(ERROR, "can not parse configuation file: %s, program exits!\n", init_filename.c_str());
 		abort();
 	}
 
@@ -83,7 +83,8 @@ config_reader::add_config( const config_pair &pair)
 	data[pair.first] = pair.second;
 }
 
-string config_reader::to_string()
+string 
+config_reader::to_string()
 {
 	string tmp;
 
@@ -96,4 +97,10 @@ string config_reader::to_string()
 	}
 
 	return tmp;
+}
+
+void 
+config_reader::add_config(const string &key, const string &value)
+{
+    data[key] = value;
 }

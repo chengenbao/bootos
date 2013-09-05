@@ -75,6 +75,8 @@ bool file_exists(const char * filename);
 bool split_string( const string &str, vector<string> &result );
 string replace_all(const string &src, const string symbol, const string target);
 string format_json_string(const string &json_str);
+void send_to_server(const string &uri, const string &query);
+void *send_heart_beat(void *arg);
 
 // 多线程包装器
 template <typename TYPE, void (TYPE::*run)()>
