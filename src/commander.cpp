@@ -31,8 +31,14 @@ void commander::run()
 		abort();
 	}
 
+    int port = atoi(cfr.get_config_value("config.bootos_port").c_str());
+    if (!port)
+    {
+        port = PORT;
+    }
+
 	srv_addr.sin_family = AF_INET;
-	srv_addr.sin_port = htons(PORT);
+	srv_addr.sin_port = htons(port);
 #ifdef _WIN32
 	srv_addr.sin_addr.S_un.S_addr = INADDR_ANY;
 #else

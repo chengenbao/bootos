@@ -18,8 +18,8 @@ bool config_reader::initialize()
 
 	if ( doc == NULL )
 	{
-		loger.log(ERROR, "can not parse configuation file: %s, program exits!\n", init_filename.c_str());
-		abort();
+		loger.log(ERROR, "can not parse configuation file: %s\n", init_filename.c_str());
+		//abort();
 	}
 
 	root_element = xmlDocGetRootElement(doc);

@@ -7,17 +7,20 @@
 #include <time.h>
 #include <json/json.h>
 #include <curl/curl.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 using namespace std;
 
 char escape_arr[128];
 const char *prog_name = "bootos";
-const char *log_file_name_prefix = "log/bootos_";
-logger loger(stderr);
-config_reader cfr;
+const char *log_file_name_prefix = "/var/log/bootos_";
+logger loger(log_file_name_prefix);
+config_reader cfr("/etc/bootos/config.xml");
 static void init_escape_char();
 static void process_cmdline_file();
 static int callback_write( void *ptr, size_t size, size_t nmemb, void *userp);
+void init_daemon();
 
 // initialization for program starting
 bool initialize()
@@ -27,10 +30,10 @@ bool initialize()
 		return false;
 	}
 
+    init_daemon();
     init_escape_char();
 	cfr.initialize();
 	process_cmdline_file();
-
 
 	return true;
 }
@@ -38,7 +41,7 @@ bool initialize()
 void process_cmdline_file()
 {
 	// read /proc/cmdline for initrd parameters
-	const string filename("config.ini");
+	const string filename = cfr.get_config_value("config.paramfile");
 	ifstream cmdfile(filename.c_str());
 	char buf[BUF_SIZE];
 	string content;
@@ -388,8 +391,6 @@ void *registe_bootos(void *arg)
     query += "_fw_service_id=" + url_encode(cl_sv_id) + "&";
     query += "data=" + url_encode(format_json_string(data.toStyledString())); 
 
-    cl_act += "?" + query;
-
     send_to_server(cl_act, query);
 
 	return NULL;
@@ -481,7 +482,7 @@ void send_to_server(const string &uri, const string &query)
     string url = "http://" ;
     url += srv_addr + ":" + srv_port + uri;
 
-    loger.log(INFO, "Send data: %s  to server %s\n", query.c_str(), url.c_str());
+    loger.log(INFO, "Send data: %s  to server %s\n\n", query.c_str(), url.c_str());
 
     CURL *curl;
     string result;
@@ -489,6 +490,8 @@ void send_to_server(const string &uri, const string &query)
 
     curl = curl_easy_init();
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 1);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, query.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback_write);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
@@ -503,7 +506,7 @@ void send_to_server(const string &uri, const string &query)
     string registe_status;
     if ( CURLE_OK != res )
     {
-        loger.log(ERROR, "Send to server error! Url:%s\n", url.c_str());
+        loger.log(ERROR, "Send to server error! Url:%s\n\n", url.c_str());
         registe_status = bootos_manager::REGISTE_STATUS["FAILED"];
     }
     else
@@ -544,5 +547,41 @@ void *send_heart_beat(void *arg)
 
     string uri = hb_act + "?" + query;
 
-    send_to_server(uri, query);
+    send_to_server(hb_act, query);
+}
+
+void 
+init_daemon()
+{
+    pid_t pid;
+
+    if ( pid = fork()) // parent exit
+    {
+        exit(0);
+    } 
+    else if(pid < 0)// fork error
+    { 
+        loger.log(ERROR, "First fork self error!\n");
+        exit(1);
+    }
+
+    setsid(); // 创建新的会话组
+
+    // 防止获取终端
+    if( pid = fork() )
+    {
+        exit(0);
+    }
+    else if( pid < 0 )
+    {
+        loger.log(ERROR, "Second fork self error!\n");
+        exit(1);
+    }
+
+    close(0); // close stdin
+    close(1); // close stdout
+    close(2); // close stderr
+    chdir("/tmp");
+    umask(0);
+
 }
