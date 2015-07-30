@@ -77,14 +77,12 @@ string config_reader::to_path( const vector<string> &path )
 	return result;
 }
 
-void
-config_reader::add_config( const config_pair &pair)
+void config_reader::add_config( const config_pair &pair)
 {
 	data[pair.first] = pair.second;
 }
 
-string 
-config_reader::to_string()
+string config_reader::to_string()
 {
 	string tmp;
 
@@ -99,8 +97,7 @@ config_reader::to_string()
 	return tmp;
 }
 
-void 
-config_reader::add_config(const string &key, const string &value)
+void  config_reader::add_config(const string &key, const string &value)
 {
     data[key] = value;
 }

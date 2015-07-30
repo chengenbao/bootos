@@ -30,8 +30,8 @@ bool initialize()
 		return false;
 	}
 
-    init_daemon();
-    init_escape_char();
+  init_daemon();
+  init_escape_char();
 	cfr.initialize();
 	process_cmdline_file();
 
@@ -389,7 +389,7 @@ void *registe_bootos(void *arg)
     string query;
     query += "sn=" + url_encode(sn) + "&";
     query += "_fw_service_id=" + url_encode(cl_sv_id) + "&";
-    query += "data=" + url_encode(format_json_string(data.toStyledString())); 
+    query += "data=" + url_encode(format_json_string(data.toStyledString()));
 
     send_to_server(cl_act, query);
 
@@ -550,7 +550,7 @@ void *send_heart_beat(void *arg)
     send_to_server(hb_act, query);
 }
 
-void 
+void
 init_daemon()
 {
     pid_t pid;
@@ -558,9 +558,9 @@ init_daemon()
     if ( pid = fork()) // parent exit
     {
         exit(0);
-    } 
+    }
     else if(pid < 0)// fork error
-    { 
+    {
         loger.log(ERROR, "First fork self error!\n");
         exit(1);
     }

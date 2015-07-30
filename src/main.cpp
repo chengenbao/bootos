@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
 	if ( initialize() )
 	{
-        registe_bootos(NULL);
+    registe_bootos(NULL);
 
 		heartbeat hb(5, send_heart_beat, NULL);
 		hb.start();
@@ -22,6 +22,6 @@ int main(int argc, char **argv)
 		while(true)
 			sleep(1000);
 	}
-	
+
 	return 0;
 }
