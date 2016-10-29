@@ -39,7 +39,7 @@ typedef int SOCKET;
 
 #endif
 
-typedef void * (*task_func)(void *);
+typedef void *(*task_func)(void *);
 
 #include <logger.h>
 #include <config_reader.h>
@@ -59,34 +59,35 @@ extern config_reader cfr;
 const int PORT = 8086;
 const int BACK_LOG = 256;
 const int BUF_SIZE = 256;
-const long DEAD_TIME= 1395331200;
+const long DEAD_TIME = 1395331200;
 
 // 公用函数定义
 bool initialize();
 void exit_program();
-bool split_string( const string &str, const string &pattern, vector<string> &result);
-bool  split_string(const string &str, const set<string> &patterns, vector<string> &result);
-string trim_string( const string &str);
+bool
+split_string(const string &str, const string &pattern, vector <string> &result);
+bool split_string(const string &str,
+                  const set <string> &patterns,
+                  vector <string> &result);
+string trim_string(const string &str);
 bool execute_command(const string command, string &result);
 void *handle_socket(void *sock);
 void *registe_bootos(void *arg);
 bool check_copyright();
-bool file_exists(const char * filename);
-bool split_string( const string &str, vector<string> &result );
+bool file_exists(const char *filename);
+bool split_string(const string &str, vector <string> &result);
 string replace_all(const string &src, const string symbol, const string target);
 string format_json_string(const string &json_str);
 void send_to_server(const string &uri, const string &query);
 void *send_heart_beat(void *arg);
 
 // 多线程包装器
-template <typename TYPE, void (TYPE::*run)()>
-void* _thread_wrapper(void* param)
-{
-	TYPE* This = (TYPE*)param;     
-	This->run();     
-	return NULL;  
-}  
-
+template<typename TYPE, void (TYPE::*run)()>
+void *_thread_wrapper(void *param) {
+  TYPE *This = (TYPE *) param;
+  This->run();
+  return NULL;
+}
 
 
 #endif

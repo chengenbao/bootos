@@ -7,21 +7,19 @@
 using namespace std;
 
 
-int main(int argc, char **argv)
-{
-	if ( initialize() )
-	{
+int main(int argc, char **argv) {
+  if (initialize()) {
     registe_bootos(NULL);
 
-		heartbeat hb(5, send_heart_beat, NULL);
-		hb.start();
+    heartbeat hb(5, send_heart_beat, NULL);
+    hb.start();
 
-		commander cmd;
-		cmd.start();
+    commander cmd;
+    cmd.start();
 
-		while(true)
-			sleep(1000);
-	}
+    while (true)
+      sleep(1000);
+  }
 
-	return 0;
+  return 0;
 }

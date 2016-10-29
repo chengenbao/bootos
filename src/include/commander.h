@@ -3,11 +3,10 @@
 
 #include <common.h>
 
-class commander
-{
-public:
-	void run();
-	void start();
+class commander {
+ public:
+  void run();
+  void start();
 };
 
 #endif
